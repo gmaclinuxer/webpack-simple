@@ -10,25 +10,138 @@
 
 <body>
     <div id="app">
-        <header class="basic"></header>
-        <span>message: {{ message }}</span>
-        <span v-once>once message: {{ onece_message }}</span>
-        <div>原始输出：{{ html_message }}</div>
-        <div v-html='html_message'>v-html:{{ html_message }}</div>
+        <header class="basic">header</header>
+        <h2> 模板语法练习 </h2>
+        <ol>
+            <li>
+                <span>message: {{ message }}</span>
+                <span v-once>once message: {{ onece_message }}</span>
+                <p>a+b={{ a + b }}</p>
+            </li>
+            <li>
+                <div>原始输出：{{ html_message }}</div>
+                <div v-html='html_message'>v-html:{{ html_message }}</div>
+            </li>
+            <li>
+                <div v-bind:id="dynId">12345</div>
+                <button v-bind:disabled="btnDisabled">button</button>
+                <p v-bind:id="'p-'+dynId">{{ 'p-'+dynId }}</p>
+                <a v-bind:href="url">click me</a>
+                <a :href="url">click me again</a>
 
-        <div v-bind:id="dynId">12345</div>
-        <button v-bind:disabled="btnDisabled">button</button>
-        <p>a+b={{ a + b }}</p>
-        <p v-bind:id="'p-'+dynId">{{ 'p-'+dynId }}</p>
+            </li>
+            <li>
+                <label for="test" v-if="show">now you see me</label>
+            </li>
+            <li>
+                <a href="###" v-on:click="onClick">click bind</a>
+                <a href="###" @click="onClick1">short click bind</a>
+            </li>
+            <li>
+                <form action="" v-on:submit.prevent="onSubmit">
+                    <button id="btn-prevent">btn-prevent</button>
+                </form>
+                <form action="" v-on:submit="onSubmit1">
+                    <button id="btn-normal">btn-normal</button>
+                </form>
+            </li>
+            <li>
+                <span>message filter: {{ message | capitalize | addOn(', messge from miya') }}</span>
+            </li>
+            <li>
+                <p>Original message: "{{ msg }}"</p>
+                <p>Computed reversed message: "{{ reversedMsg }}"</p>
+            </li>
+            <li>
+                <ul>
+                    <!--<template v-for="(item, index) in list3">-->
+                    <template v-for="(item, index) of list3">
+                        <p>computed now: "{{ index }} - {{ now }} - {{ item }}"</p>
+                        <p>method now(no cache): "{{ index }} - {{ nowMethod() }} - {{ item }}"</p>
+                    </template>
+                </ul>
+            </li>
 
-        <label for="test" v-if="show">now you see me</label>
-        <a v-bind:href="url">click me</a>
-        <a href="###" v-on:click="onClick">fuck</a>
-        <footer></footer>
+        </ol>
+
+        <footer>footer</footer>
     </div>
     <script src="./vue.js"></script>
     <script src="./vue-router.js"></script>
-    <script src="./app.1.js"></script>
+    <!--<script src="./app.1.js"></script>-->
 </body>
+<script>
+    // sleep demo
+    function sleep(d) {
+        var t = Date.now(); while(Date.now() - t <= d);
+    }
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            msg: 'hello',
+            message: 'hello world',
+            onece_message: 'hello world',
+            html_message: '<p>hello world</p>',
+            dynId: '12345',
+            btnDisabled: true,
+            a: 10,
+            b: 20,
+            show: false,
+            url: '###',
+            list3: Array.from(Array(3).keys()) // [0-3]
+        },
+        computed: {
+            reversedMsg: function () {
+                return this.msg.split('').reverse().join('');
+            },
+            now: function () {
+                return Date.now();
+            }
+        },
+        methods: {
+            onClick: function () {
+                alert(12345);
+            },
+            onClick1: function () {
+                alert(789);
+            },
+            onSubmit: function () {
+                alert('submit and exit');
+            },
+            onSubmit1: function () {
+                alert('submit and refresh');
+            },
+            nowMethod: function () {
+                sleep(10);
+                return Date.now();
+            }
+        },
+        // filter
+        filters: {
+            capitalize: function (value) {
+                if (!value) { return '' }
+                value = value.toString()
+                return value.charAt(0).toUpperCase() + value.slice(1);
+            },
+            addOn: function (value, extra) {
+                return value + extra
+            },
+        }
+
+    });
+
+    app.message = 'hello pitou';
+    // no use for v-once
+    app.once_message = 'hello pitou';
+    setTimeout(function () {
+        app.show = true;
+    }, 2000);
+
+    window.onload = function () {
+        alert('dom inited.');
+    };
+
+</script>
 
 </html>
