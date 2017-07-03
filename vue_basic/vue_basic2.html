@@ -61,7 +61,15 @@
                     </template>
                 </ul>
             </li>
-
+            <li>
+                <input type="text" v-model="firstName" />
+                <p>firstName: {{ firstName }}</p>
+                <input type="text" v-model="lastName" />
+                <p>lastName: {{ lastName }}</p>
+                <p>fullName: {{ fullName }}</p>
+                <p>betterFullName: {{ betterFullName }}</p>
+                <input type="text" v-model="fullNameWithSetter" />
+            </li>
         </ol>
 
         <footer>footer</footer>
@@ -73,7 +81,7 @@
 <script>
     // sleep demo
     function sleep(d) {
-        var t = Date.now(); while(Date.now() - t <= d);
+        var t = Date.now(); while (Date.now() - t <= d);
     }
 
     var app = new Vue({
@@ -89,11 +97,37 @@
             b: 20,
             show: false,
             url: '###',
+            firstName: '',
+            lastName: '',
+            fullName: '',
             list3: Array.from(Array(3).keys()) // [0-3]
         },
+        watch: {
+            firstName: function (val) {
+                console.log('firstName: ' + val);
+                this.fullName = val + ' ' + this.lastName;
+            },
+            lastName: function (val) {
+                console.log('lastName: ' + val);
+                this.fullName = this.firstName + ' ' + val;
+            },
+        },
         computed: {
+            fullNameWithSetter: {
+                get: function (val) {
+                    return this.firstName + ' ' + this.lastName
+                },
+                set: function (val) {
+                    var names = val.split(' ');
+                    this.firstName = names[0];
+                    this.lastName = names[names.length - 1];
+                }
+            },
             reversedMsg: function () {
                 return this.msg.split('').reverse().join('');
+            },
+            betterFullName: function (val) {
+                return this.firstName + ' ' + this.lastName
             },
             now: function () {
                 return Date.now();
