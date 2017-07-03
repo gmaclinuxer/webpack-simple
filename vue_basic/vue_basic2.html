@@ -9,12 +9,23 @@
 </head>
 
 <body>
-    <div id="container">
-    <span>message: {{message}}</span>
-    
-    <header class="basic"></header>
-    <footer></footer>
+    <div id="app">
+        <header class="basic"></header>
+        <span>message: {{ message }}</span>
+        <span v-once>once message: {{ onece_message }}</span>
+        <div>原始输出：{{ html_message }}</div>
+        <div v-html='html_message'>v-html:{{ html_message }}</div>
 
+        <div v-bind:id="dynId">12345</div>
+        <button v-bind:disabled="btnDisabled">button</button>
+        <p>a+b={{ a + b }}</p>
+        <p v-bind:id="'p-'+dynId">{{ 'p-'+dynId }}</p>
+
+        <label for="test" v-if="show">now you see me</label>
+        <a v-bind:href="url">click me</a>
+        <a href="###" v-on:click="onClick">fuck</a>
+        <footer></footer>
+    </div>
     <script src="./vue.js"></script>
     <script src="./vue-router.js"></script>
     <script src="./app.1.js"></script>
