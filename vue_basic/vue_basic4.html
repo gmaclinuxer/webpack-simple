@@ -19,19 +19,35 @@
                             <li v-for="(item, index) in items">{{index}}. {{prefix}}-{{item.message}}</li>
                         </ul>
                     </p>
+                </div>
+            </li>
+            <li>
+                <div>template v-for
+                    <p>
+                        <ol>
+                            <template v-for="item of items">
+                                <li>item.message</li>
+                                <li class="divider">分隔符</li>
+                            </template>
+                        </ol>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div>对象迭代
+                    <p>
+                        <ul>
+                            <li v-for="(value, key, index) in itemObj">{{index}}. {{key}}-{{value}}</li>
+                        </ul>
+                    </p>
                     <p></p>
                 </div>
             </li>
             <li>
                 <div>
-                    <p></p>
-                    <p></p>
-                </div>
-            </li>
-            <li>
-                <div>
-                    <p></p>
-                    <p></p>
+                    <p>
+                        <span v-for="n in 10">{{ n }} </span>
+                    </p>
                 </div>
             </li>
         </ul>
@@ -52,7 +68,11 @@
             items: [
                 { id: 1, message: 'foo' },
                 { id: 2, message: 'bar' },
-            ]
+            ],
+            itemObj: {
+                'man': '男人',
+                'woman': '女人',
+            }
         },
         methods: {
 
