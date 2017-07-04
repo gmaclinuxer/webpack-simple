@@ -44,10 +44,40 @@
                 </div>
             </li>
             <li>
-                <div>
+                <div>整数迭代
                     <p>
                         <span v-for="n in 10">{{ n }} </span>
                     </p>
+                </div>
+            </li>
+            <li>
+                <div> 自定义列表组件
+                    <p>
+                        <div>
+                            <input type="text" v-on:keyup.enter="addTodo" v-model="todoText">
+                            <p>
+                                <ul>
+                                    <li is="todo-item" v-for="(todo, index) of todoList" :title="todo.title" :key="todo.id" @remove="todoList.splice(index, 1)"></li>
+                                </ul>
+                            </p>
+                        </div>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div> v-for + v-if
+                    <p>
+                        <ul>
+                            <li v-for="todo in todoList" v-if="!todo.isComplete">
+                                {{ todo.title }}
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div> push/pop/shift/unshift/splice/sort/reverse/filter/concat/slice/$set
+                    <p>item in filterFunc(itemList)</p>
                 </div>
             </li>
         </ul>
@@ -59,26 +89,77 @@
 <script src="./download.js"></script>
 <script src="./axios.min.js"></script>
 <script src="./lodash.min.js"></script>
-
+<template id="todo-tpl">
+    <li>
+        {{title}}
+        <button @click="removeSelf">x</button>
+    </li>
+</template>
 <script>
+    Vue.component('todo-item', {
+        template: "#todo-tpl",
+        // template: `
+        // <li>
+        // {{title}}
+        // <button @click="removeSelf">x</button>
+        // </li>
+        // `,
+        props: ['title'],
+        // props: {
+        //     title: {
+        //         type: String,
+        //         required: true
+        //     }
+        // },
+        methods: {
+            removeSelf: function () {
+                this.$emit("remove");
+            }
+        }
+    })
     let vm = new Vue({
         el: "#container",
         data: {
             prefix: 'bk',
-            items: [
-                { id: 1, message: 'foo' },
-                { id: 2, message: 'bar' },
+            items: [{
+                    id: 1,
+                    message: 'foo'
+                },
+                {
+                    id: 2,
+                    message: 'bar'
+                },
             ],
             itemObj: {
                 'man': '男人',
                 'woman': '女人',
-            }
+            },
+            todoList: [{
+                    id: 1,
+                    title: 'todo-1',
+                    isComplete: true
+                },
+                {
+                    id: 2,
+                    title: 'todo-2',
+                    isComplete: false
+                },
+                {
+                    id: 3,
+                    title: 'todo-3',
+                    isComplete: true
+                },
+            ],
+            todoText: ''
         },
         methods: {
-
+            addTodo: function () {
+                this.todoList.push({
+                    title: this.todoText
+                })
+            }
         }
     })
-
 </script>
 
 </html>
