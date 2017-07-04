@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="container">
+        <ul id="vue-todos">
+            <li class="todo">
+                <div>文本绑定</div>
+                <p> <input type="text" v-model="name" placeholder="input something"> {{ name }} </p>
+                <p> <textarea name="" id="" cols="21" rows="5" v-model="message" placeholder="input message"></textarea> </p>
+                <pre>{{ message }}</pre>
+            </li>
+            <li class="todo">
+                <div>复选框绑定</div>
+                <p>
+                    <!--(input[type=checkbox id="check$" v-model="checkNames" value="check$"]+label[for="check$"]{Check$})*3-->
+                    <input type="checkbox" id="check1" v-model="checkNames" value="check1">
+                    <label for="check1">Check1</label>
+                    <input type="checkbox" id="check2" v-model="checkNames" value="check2">
+                    <label for="check2">Check2</label>
+                    <input type="checkbox" id="check3" v-model="checkNames" value="check3">
+                    <label for="check3">Check3</label>
+                    <p><span>Checked names: {{ checkNames }}</span></p>
+                </p>
+            </li>
+            <li class="todo">
+                <div>单选框绑定</div>
+                <p>
+                    <input type="radio" id="pick1" v-model="picked" value="pick1">
+                    <label for="pick1">Pick1</label>
+                    <input type="radio" id="pick2" v-model="picked" value="pick2">
+                    <label for="pick2">Pick2</label>
+                    <input type="radio" id="pick3" v-model="picked" value="pick3">
+                    <label for="pick3">Pick3</label>
+                    <p><span>picked item: {{ picked }}</span></p>
+                </p>
+            </li>
+            <li class="todo">
+                <div>下拉框绑定</div>
+                <p>
+                    <!--select[v-model="selected"]>(option[disabled value=""]{请选择})+option[value="sel-$"]{sel$}*3-->
+                    <select name="" id="" v-model="selected">
+                    <option value="" disabled>请选择</option>
+                    <option value="sel-1">sel1</option>
+                    <option value="sel-2">sel2</option>
+                    <option value="sel-3">sel3</option>
+                </select>
+                </p>
+                <p>Select: {{ selected }}</p>
+            </li>
+            <li class="todo">
+                <div>多选框</div>
+                <p>
+                    <!--select[v-model="selected" multiple]>option[value="sel-$"]{sel$}*3-->
+                    <select name="" id="" v-model="multiselected" multiple>
+                    <option value="sel-1">sel1</option>
+                    <option value="sel-2">sel2</option>
+                    <option value="sel-3">sel3</option>
+                </select>
+                </p>
+                <p>MultiSelect: {{ multiselected }}</p>
+            </li>
+            <li>
+                <div>列表初始化
+                    <p>
+                        <select name="" id="" v-model="myselect">
+                            <option v-for="option in options" v-bind:value="option.value">
+                                {{option.text}}
+                            </option>
+                        </select> {{myselect}}
+                    </p>
+                    <p></p>
+                </div>
+            </li>
+            <li>
+                <div> 绑定到变量
+                    <p>
+                        <input type="checkbox" v-model="toggle" v-bind:true-value="man" v-bind:false-value="woman">
+                        <input type="radio" v-model="pick" v-bind:value="radioIt">
+                    </p>
+                    <p>
+                        toggle: {{toggle}} pick: {{pick}}
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div>选择列表绑定到对象
+                    <p>
+                        <select v-model="selectedObj">
+                            <!-- 内联对象字面量 -->
+                        <option v-bind:value="{ number: 123, name: 'ab'}">第一个</option>
+                        <option v-bind:value="{ number: 456, name: 'cd'}">第二个</option>
+                        </select>
+                    </p>
+                    <p>
+                        Selected: {{selectedObj}}
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div>属性
+                    <p>lazy: <input type="text" v-model.lazy="lzyInput" placeholder="update in change event"> : {{lzyInput}}</p>
+                    <p>number: <input type="number" v-model.number="numInput" placeholder="input number"> : {{numInput}} - {{typeof(numInput)}}</p>
+                    <p>trim: <input type="text" v-model.trim="trimInput" placeholder="trim input"> : {{trimInput}}</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <script src="./vue.js"></script>
+    <script src="./vue-router.js"></script>
+    <script>
+        var app = new Vue({
+            el: "#container",
+            data: {
+                name: '',
+                message: '',
+                checkNames: [],
+                picked: '',
+                selectedObj: '',
+                selected: '',
+                myselect: '',
+                toggle: { name: 'woman', num: 100 },
+                pick: { a: 0, b: 0 },
+                radioIt: { 'a': 1, 'b': 2 },
+                woman: { name: 'woman', num: 100 },
+                man: { name: 'man', num: 1000 },
+                options: [
+                    { text: 'One', value: 'A' },
+                    { text: 'Two', value: 'B' },
+                    { text: 'Three', value: 'C' }
+                ],
+                multiselected: [],
+                lzyInput: '',
+                numInput: '',
+            },
+            computed: {
+
+            },
+            methods: {
+
+            },
+            watch: {
+                lzyInput: function(val){
+                    alert('lzyInput Changed.');
+                }
+            },
+            filters: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

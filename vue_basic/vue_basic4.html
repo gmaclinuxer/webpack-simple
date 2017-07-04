@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="container">
+        <!--ul>(li>div>p*2)*3-->
+        <ul>
+            <li>
+                <div> v-for="(item, index) in items"
+                    <p>
+                        <ul id="example-1">
+                            <li v-for="(item, index) in items">{{index}}. {{prefix}}-{{item.message}}</li>
+                        </ul>
+                    </p>
+                    <p></p>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <p></p>
+                    <p></p>
+                </div>
+            </li>
+            <li>
+                <div>
+                    <p></p>
+                    <p></p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+
+<script src="./vue.js"></script>
+<script src="./vue-router.js"></script>
+<script src="./download.js"></script>
+<script src="./axios.min.js"></script>
+<script src="./lodash.min.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#container",
+        data: {
+            prefix: 'bk',
+            items: [
+                { id: 1, message: 'foo' },
+                { id: 2, message: 'bar' },
+            ]
+        },
+        methods: {
+
+        }
+    })
+
+</script>
+
+</html>
