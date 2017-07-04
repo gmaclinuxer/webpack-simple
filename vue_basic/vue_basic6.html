@@ -1,34 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
+
 <body>
     <div id="container">
         <!--ul>(li>div>p*2)*3-->
         <ul>
             <li>
-                <div>
-                    <p></p>
+                <div> v-if
+                    <p>
+                        <div v-if="Math.random() > 0.5">
+                            Now you see me
+                        </div>
+                        <div v-else>
+                            Now you don't see me
+                        </div>
+                    </p>
                     <p></p>
                 </div>
             </li>
             <li>
-                <div>
-                    <p></p>
+                <div> v-else-if v-else
+                    <p>
+                        <div v-if="type === 'A'">
+                            A
+                        </div>
+                        <div v-else-if="type === 'B'">
+                            B
+                        </div>
+                        <div v-else-if="type === 'C'">
+                            C
+                        </div>
+                        <div v-else>
+                            Not A/B/C
+                        </div>
+                    </p>
                     <p></p>
                 </div>
             </li>
             <li>
-                <div>
-                    <p></p>
-                    <p></p>
+                <div> key dom缓存
+                    <p>
+                        without key: 复用dom
+                        <template v-if="loginType === 'username'">
+                            <label>Username</label>
+                            <input placeholder="Enter your username">
+                        </template>
+                        <template v-else>
+                            <label>Email</label>
+                            <input placeholder="Enter your email address">
+                        </template>
+                    </p>
+                    <p>
+                        with key: 重新渲染
+                        <template v-if="loginType === 'username'">
+                            <label>Username</label>
+                            <input placeholder="Enter your username" key="username-input">
+                        </template>
+                        <template v-else>
+                            <label>Email</label>
+                            <input placeholder="Enter your email address" key="email-input">
+                        </template>
+                    </p>
+                    <p>
+                        <button @click="toggleType">toggle login type</button>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div> v-show 初始化开销，适合频繁谢欢 v-if 切换开销，重新渲染
+                    <p>
+                        <h1 v-show="show">Hello!</h1>
+                        <button @click="toggleShow">toggle show by css</button>
+                    </p>
                 </div>
             </li>
         </ul>
     </div>
 </body>
+<script src="./vue.js"></script>
+<script src="./vue-router.js"></script>
+<script src="./download.js"></script>
+<script src="./axios.min.js"></script>
+<script src="./lodash.min.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#container",
+        data: {
+            type: 'B',
+            loginType: 'username',
+            show: true
+        },
+        methods: {
+            toggleType: function () {
+                if (this.loginType == 'email') {
+                    this.loginType = 'username'
+                } else {
+                    this.loginType = 'email'
+                }
+            },
+            toggleShow: function(){
+                this.show = !this.show;
+            }
+        }
+    })
+    setTimeout(function(){
+        vm.show = false;
+    }, 2000)
+</script>
+
 </html>
