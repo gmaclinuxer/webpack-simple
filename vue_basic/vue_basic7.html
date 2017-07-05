@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>样式绑定</title>
+    <style>
+        .active {
+            background: gray;
+            color: white;
+        }
+
+        .text-danger {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <!--ul>(li>div>p*2)*3-->
+        <ul>
+            <li>
+                <div> v-bind:class=""
+                    <p>
+                        <div v-bind:class="{ active: isActive }">{ active: isActive }</div>
+                        <div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }">{ active: isActive, 'text-danger': hasError }</div>
+                        <div v-bind:class="classObject"> classObject </div>
+                        <div v-bind:class="classObject1"> classObject1 </div>
+                        <div v-bind:class="[activeClass, errorClass]">[activeClass, errorClass]</div>
+                        <div v-bind:class="[{ active: isActive }, errorClass]"> [{ active: isActive }, errorClass]</div>
+                        <div v-bind:class="[isActive ? activeClass : '', errorClass]">[isActive ? activeClass : '', errorClass]</div>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div> v-bind:style=""
+                    <p>
+                        <div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">{ color: activeColor, fontSize: fontSize + 'px' }</div>
+                        <div v-bind:style="styleObject">styleObject</div>
+                    </p>
+                    <p></p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="./vue.js"></script>
+<script src="./vue-router.js"></script>
+<script src="./axios.min.js"></script>
+<script src="./lodash.min.js"></script>
+
+<script>
+    let vm = new Vue({
+        el: "#container",
+        data: {
+            isActive: _.sample([true, false]),
+            hasError: _.sample([true, false]),
+            classObject: {
+                active: true,
+                'text-danger': true
+            },
+            activeClass: 'active',
+            errorClass: 'text-danger',
+            activeColor: 'red',
+            fontSize: _.random(16, 64),
+            styleObject: {
+                color: 'red',
+                fontSize: _.random(16, 64) + 'px'
+            }
+        },
+        computed: {
+            classObject1: function () {
+                return {
+                    active: this.isActive && !this.hasError,
+                    'text-danger': this.hasError,
+                }
+            }
+        },
+        methods: {
+
+        }
+    })
+    setTimeout(function () {
+        vm.show = false;
+    }, 2000)
+
+</script>
+
+</html>

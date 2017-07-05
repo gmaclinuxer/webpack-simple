@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <ul>
+            <li>
+                <div>
+                    注册组件: Vue.component(tagName, option)
+                    <p>
+                        <my-component></my-component>
+                        <!--<span>非法引用局部注册组件：未定义<my-component1></my-component1></span>-->
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div>局部注册: Vue({components: {}})
+                    <div id="example">
+                        <span>引用局部注册组件：<my-component1></my-component1></span>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div>借尸还魂：dom+is
+                    <table>
+                        <tr is="my-component"></tr>
+                    </table>
+                </div>
+            </li>
+            <li>
+                <div>计数器
+                    <p>
+                        <btn-cnt v-on:inc="incTotal" v-bind:initial-counter="10"></btn-cnt>
+                        <btn-cnt v-on:inc="incTotal" v-on:click.native="nativeClick" initial-counter=10></btn-cnt>
+                        <btn-cnt v-on:inc="incTotal" v-bind:initial-counter="from100"></btn-cnt>
+                        {{ total }}
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div>
+                    static props down
+                    <p>
+                        <!--<my-component2 myMessage="hello!">undefined</my-component2>-->
+                        <my-component2 my-message="hello!"></my-component2>
+                    </p>
+                    dynamic props down
+                    <p>
+                        <input type="text" v-model="parentMsg">
+                        <br>
+                        <child v-bind:msg="parentMsg"></child>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div>修改原生input：接受一个 value 属性，在有新的 value 时触发 input 事件
+
+                    <p>
+                        <my-input v-model="price"></my-input>
+                        <!--<custom-input
+                        v-bind:value="something"
+                        v-on:input="something = arguments[0]">
+                        </custom-input>-->
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="./vue.js"></script>
+<script src="./vue-router.js"></script>
+<script src="./axios.min.js"></script>
+<script src="./lodash.min.js"></script>
+
+<script>
+    // 方式一：全局注册组件
+    Vue.component('my-component', {
+        template: `
+        <div>{{ message }}</div>
+        `,
+        data: function () {
+            return {
+                message: '你要控记你治挤...'
+            }
+        }
+    })
+
+    // 方式二：局部注册
+    var vm = new Vue({
+        el: "#example",
+        components: {
+            'my-component1': { 'template': '<label>我是my-component1啊~</label>' }
+        }
+    })
+
+    // 方式一：全局注册组件 -计数器
+    Vue.component('btn-cnt', {
+        template:
+        // <button @click="counter += 1">{{ counter }}</button>
+        `
+        <button @click="inc">{{ counter }}</button>
+        `,
+        props: {
+            initialCounter: {
+                type: [Number, String],
+                // type: Number,
+                default: 0,
+                // validator: function(value){
+                //     console.log(value);
+                // }
+                // required: true,
+            }
+        },
+        data: function () {
+            return {
+                // counter: this.initialCounter == undefined ? 0 : this.initialCounter
+                counter: this.initialCounter
+            }
+        },
+        methods: {
+            inc: function () {
+                this.counter += 1;
+                this.$emit('inc');
+            }
+        }
+    })
+
+    // 方式一：全局注册组件 - props down
+    Vue.component('my-component2', {
+        template: `
+        <span>{{ myMessage }}</span>
+        `,
+        props: ['myMessage']
+    })
+
+    // 方式一：全局注册组件 - props msg to child
+    Vue.component('child', {
+        // camelCase in JavaScript
+        props: ['msg'],
+        template: '<span>{{ msg }}</span>'
+    })
+
+
+    // 方式一：全局注册组件 - 自定义input
+    Vue.component('my-input', {
+        template:
+        `
+        <span>
+            $
+            <input 
+            ref="myinput" 
+            v-bind:value="value" 
+            v-on:input="myInput($event.target.value)"
+            >
+        </span>
+        `,
+        model: {
+            prop: 'value',
+            event: 'input'
+        },
+        props: ['value'],
+        data: function () {
+            return {
+            }
+        },
+        methods: {
+            myInput: function (value) {
+                var formattedValue = value
+                    // 删除两侧的空格符
+                    .trim()
+                    // 保留 2 小数位
+                    .slice(
+                    0,
+                    value.indexOf('.') === -1
+                        ? value.length
+                        : value.indexOf('.') + 3
+                    );
+                console.log(Number(formattedValue));
+                // 如果值不统一，手动覆盖以保持一致
+                // if (formattedValue !== value) {
+                //     this.$refs.myinput.value = formattedValue;
+                // }
+                // 通过 input 事件发出数值
+                this.$emit('input', Number(formattedValue))
+            }
+        }
+    });
+
+    // 创建实例
+    var vm = new Vue({
+        el: "#container",
+        components: {
+        },
+        data: {
+            from100: 100,
+            parentMsg: '',
+            total: 0,
+            price: 0,
+        },
+        computed: {
+
+        },
+        methods: {
+            nativeClick: function () {
+                alert('native click capture.')
+            },
+            incTotal: function () {
+                this.total += 1;
+            }
+        }
+    })
+
+</script>
+
+</html>
