@@ -67,16 +67,62 @@
 
                     <p>
                         <my-input v-model="price"></my-input>
+                        {{ price }}
                         <!--<custom-input
                         v-bind:value="something"
                         v-on:input="something = arguments[0]">
                         </custom-input>-->
+                        <my-checkbox v-model="foo" value="some value"></my-checkbox>
+                        <my-checkbox v-model="foo" value="another value"></my-checkbox>
+                        {{ foo }}
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div>slot文件分发
+                    <p>
+                        <div>
+                            <h1>我是父组件的标题</h1>
+                            <slot-component>
+                                <p slot="miya">这是一些初始内容[slot=miya]</p>
+                                <p>这是更多的初始内容</p>
+                            </slot-component>
+                        </div>
+                    </p>
+                </div>
+            </li>
+            <li>
+                <div> app-layout
+                    <p>
+                        <app-layout>
+                            <h1 slot="header">这里可能是一个页面标题</h1>
+                            <p>主要内容的一个段落。</p>
+                            <p>另一个主要段落。</p>
+                            <p slot="footer">这里有一些联系信息</p>
+                        </app-layout>
                     </p>
                 </div>
             </li>
         </ul>
     </div>
 </body>
+
+<!--<script type="text/x-template" id="app-layout-tpl">-->
+<template id="app-layout-tpl">
+    <div class="container">
+        <header>
+            <slot name="header"></slot>
+        </header>
+        <main>
+            <slot></slot>
+        </main>
+        <footer>
+            <slot name="footer"></slot>
+        </footer>
+    </div>
+</template>
+<!--</script>-->
+
 <script src="./vue.js"></script>
 <script src="./vue-router.js"></script>
 <script src="./axios.min.js"></script>
@@ -165,14 +211,10 @@
         </span>
         `,
         model: {
-            prop: 'value',
-            event: 'input'
+            // prop: 'value',
+            event: 'myinput' // default is input
         },
         props: ['value'],
-        data: function () {
-            return {
-            }
-        },
         methods: {
             myInput: function (value) {
                 var formattedValue = value
@@ -187,25 +229,87 @@
                     );
                 console.log(Number(formattedValue));
                 // 如果值不统一，手动覆盖以保持一致
-                // if (formattedValue !== value) {
-                //     this.$refs.myinput.value = formattedValue;
-                // }
+                if (formattedValue !== value) {
+                    // this.$refs.input.value = formattedValue;
+                    this.$refs.myinput.value = formattedValue;
+                }
                 // 通过 input 事件发出数值
-                this.$emit('input', Number(formattedValue))
+                // this.$emit('input', Number(formattedValue))
+                this.$emit('myinput', Number(formattedValue))
             }
         }
     });
 
+    // checkbox
+    Vue.component('my-checkbox', {
+        template:
+        `
+        <span>
+            <input
+            type="checkbox" 
+            ref="input" 
+            v-bind:checked="checked" 
+            v-on:change="myCheck($event.target.value)"
+            >
+        </span>
+        `,
+        model: {
+            prop: 'checked',
+            event: 'change'
+        },
+        props: {
+            checked: Boolean,
+            value: String
+        },
+        methods: {
+            myCheck: function (value) {
+                this.$emit('change', this.$refs.input.checked);
+            }
+        }
+    })
     // 创建实例
     var vm = new Vue({
         el: "#container",
         components: {
+            'slot-component': {
+                template: `
+                <div>
+                <h2>我是子组件的标题</h2>
+                <slot name="miya">
+                    只有在没有要分发的内容时才会显示。
+                </slot>
+                <slot name="miya1">
+                    只有在没有要分发的内容时才会显示。
+                </slot>
+                <slot>
+                    匿名 slot ，它是默认 slot ，作为找不到匹配的内容片段的备用插槽
+                </slot>
+                </div>            
+            `
+            },
+            'app-layout': {
+                // template: "#app-layout-tpl",
+                template: `
+                    <div class="container">
+                        <header>
+                            <slot name="header"></slot>
+                        </header>
+                        <main>
+                            <slot></slot>
+                        </main>
+                        <footer>
+                            <slot name="footer"></slot>
+                        </footer>
+                    </div>                    
+                    `
+            }
         },
         data: {
             from100: 100,
             parentMsg: '',
             total: 0,
             price: 0,
+            foo: '',
         },
         computed: {
 
