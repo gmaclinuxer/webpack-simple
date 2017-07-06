@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件</title>
+</head>
+
+<body>
+    <div id="app">
+        <app-layout>
+            <h1 slot="header">这里可能是一个页面标题</h1>
+            <p>主要内容的一个段落。</p>
+            <p style="margin-left:20px">
+                作用域插槽。
+                <child>
+                    <!--这里会被忽略-->
+                    <span>hello from parent</span><br>
+                    <!--作用域插槽的模板-->
+                    <template scope="props">
+                        <!--scope 的值对应一个临时变量名，此变量接收从子组件中传递的 prop 对象-->
+                        <span>{{ props.text }}</span><br>
+                        <span>hello from parent</span>
+                    </template>
+                </child>
+                <!--具代表性的用例：列表组件-->
+                <my-awesome-list :items="items">
+                    <!-- 作用域插槽也可以是具名的 -->
+                    <template slot="item" scope="props">
+                        <li class="my-fancy-item">{{ props.text }}<label for="">  *</label></li>
+                    </template>
+                </my-awesome-list>
+            </p>
+            <p>另一个主要段落。</p>
+            <p slot="footer">这里有一些联系信息</p>
+        </app-layout>
+    </div>
+    </div>
+
+</body>
+
+<!--<script type="text/x-template" id="app-layout-tpl">-->
+<template id="app-layout-tpl">
+    <div class="container">
+        全局注册
+        <header>
+            <slot name="header"></slot>
+        </header>
+        <main>
+            <slot></slot>
+        </main>
+        <footer>
+            <slot name="footer"></slot>
+        </footer>
+    </div>
+</template>
+<!--</script>-->
+<script type="text/x-template" id="list-item-tpl">
+    <ul>
+        <slot name="item" v-for="item in items" :text="item.text">
+            <!-- 这里写入备用内容 -->
+        </slot>
+    </ul>
+</script>
+
+<script src="./vue.js"></script>
+<script src="./vue-router.js"></script>
+<script src="./axios.min.js"></script>
+<script src="./lodash.min.js"></script>
+
+<script>
+    // 组件构造器
+    var appLayout = Vue.extend({
+        template: '#app-layout-tpl'
+    })
+    Vue.component('app-layout', appLayout);
+
+    // Vue.extend(options) == Vue.components(tagName, options)
+    // Vue.component('app-layout', {
+    //     template: '#app-layout-tpl'
+    // });
+
+    Vue.component('my-awesome-list', {
+        template: "#list-item-tpl",
+        props: ['items']
+    });
+
+    // 创建实例
+    var vm = new Vue({
+        el: "#app",
+        components: {
+            // 'app-layout': {
+            // template: "#app-layout-tpl",
+            // template: `
+            //     <div class="container">
+            //         局部注册覆盖全局注册
+            //         <header>
+            //             <slot name="header"></slot>
+            //         </header>
+            //         <main>
+            //             <slot></slot>
+            //         </main>
+            //         <footer>
+            //             <slot name="footer"></slot>
+            //         </footer>
+            //     </div>                    
+            //     `
+            // },
+            'child': {
+                // 从子组件传递prop到父组件
+                template: `
+                    <div class="child">
+                    <slot text="hello from child"></slot>
+                    </div>                
+                `
+            }
+        },
+        data: {
+            items: [
+                { id: 1, text: 'item1' },
+                { id: 2, text: 'item2' },
+                { id: 3, text: 'item3' },
+                { id: 4, text: 'item4' },
+                { id: 5, text: 'item5' },
+            ]
+        },
+        computed: {
+        },
+        methods: {
+        }
+    })
+
+</script>
+
+</html>

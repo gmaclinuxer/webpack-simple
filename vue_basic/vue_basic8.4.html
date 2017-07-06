@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>动态组件实现的简单路由</title>
+    <style>
+        main {
+            clear: both;
+            padding: 20px;
+        }
+
+        .nav-simple li {
+            float: left;
+            margin-right: 20px;
+            list-style: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <app-layout>
+            <ul class="nav-simple" slot="header" ref="head">
+                <li><a @click="goto('home')" href="##">home</a></li>
+                <li><a @click="goto('posts')" href="##">posts</a></li>
+                <li><a @click="goto('help')" href="##">help</a></li>
+            </ul>
+            <keep-alive>
+                <component v-bind:is="currentView"></component>
+            </keep-alive>
+            <p slot="footer" ref="foot">CopyRight Here@2010-2020</p>
+        </app-layout>
+    </div>
+</body>
+
+<template id="app-layout-tpl">
+    <!--模板只能有一个Root：如果去掉div，则只会渲染到header-->
+    <div class="container">
+        <header>
+            <slot name="header"></slot>
+        </header>
+        <main>
+            <slot> </slot>
+        </main>
+        <footer>
+            <slot name="footer"></slot>
+        </footer>
+    </div>
+</template>
+
+
+<script src="./vue.js"></script>
+<script src="./vue-router.js"></script>
+<script src="./lodash.min.js"></script>
+
+<script>
+    Vue.component('app-layout', {
+        template: '#app-layout-tpl'
+    });
+
+    // 创建实例
+    var vm = new Vue({
+        el: "#app",
+        components: {
+            home: {
+                // 组件中包含大量静态内容时，可以考虑使用 v-once 将渲染结果缓存起来
+                template: `<div v-once><p>动态组件实现的简单路由：来到了首页</p><input type="text" placeholder="首页输入"></div>`
+            },
+            posts: {
+                template: `<div><p>动态组件实现的简单路由：来到了Post页</p>`
+            },
+            help: { template: `<div><p>动态组件实现的简单路由：来到了帮助页</p><input type="text" placeholder="帮助页输入"></div>` },
+        },
+        data: {
+            currentView: 'home'
+        },
+        methods: {
+            goto: function (name) {
+                console.log(this.$refs);
+                // 直接访问子组件的应急方案：子组件索引
+                this.$refs.foot.innerHTML = name;
+                this.currentView = name;
+            }
+        }
+    })
+
+</script>
+
+</html>
