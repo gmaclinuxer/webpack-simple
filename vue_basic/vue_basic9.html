@@ -11,6 +11,7 @@
 <body>
     <div id="app">
         <label for="">自动聚焦的输入框：</label><input type="text" v-focus>
+        <div id="hook-arguments-example" v-obj-demo="{color: 'white', text: 'hello'}" v-color-swatch="color" v-demo:foo.a.b="message"></div>
     </div>
 </body>
 
@@ -19,6 +20,25 @@
 <script src="./axios.min.js"></script>
 <script src="./lodash.min.js"></script>
 <script>
+    Vue.directive('obj-demo', function(el, binding) {
+        console.log(binding.value.color) // => "white"
+        console.log(binding.value.text) // => "hello!"
+    })
+    Vue.directive('color-swatch', function(el, binding) {
+        el.style.color = binding.value
+    })
+    Vue.directive('demo', {
+        bind: function(el, binding, vnode) {
+            var s = JSON.stringify
+            el.innerHTML =
+                'name: ' + s(binding.name) + '<br>' +
+                'value: ' + s(binding.value) + '<br>' +
+                'expression: ' + s(binding.expression) + '<br>' +
+                'argument: ' + s(binding.arg) + '<br>' +
+                'modifiers: ' + s(binding.modifiers) + '<br>' +
+                'vnode keys: ' + Object.keys(vnode).join(', ')
+        }
+    })
     Vue.directive('focus', {
         // 绑定元素插入到dom树后
         inserted: function(el) {
@@ -34,9 +54,13 @@
     var vm = new Vue({
         el: "#app",
         data: {
-
+            message: 'hello world',
+            color: _.sample(["blue", "green"])
         }
     })
+    _.delay(function(clr) {
+        vm.color = clr;
+    }, 2000, color = "black")
 </script>
 
 </html>
