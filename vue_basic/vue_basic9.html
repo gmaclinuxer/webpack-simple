@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue自定义指令</title>
+</head>
+
+<body>
+    <div id="app">
+        <label for="">自动聚焦的输入框：</label><input type="text" v-focus>
+    </div>
+</body>
+
+<script src="./vue.js"></script>
+<script src="./vue-router.js"></script>
+<script src="./axios.min.js"></script>
+<script src="./lodash.min.js"></script>
+<script>
+    Vue.directive('focus', {
+        // 绑定元素插入到dom树后
+        inserted: function(el) {
+            // focus
+            console.log('focus');
+            el.focus();
+        },
+        // 指令第一次绑定到元素时执行初始化操作
+        bind: function(el, binding) {
+            console.log('bind', binding);
+        }
+    })
+    var vm = new Vue({
+        el: "#app",
+        data: {
+
+        }
+    })
+</script>
+
+</html>
